@@ -453,7 +453,9 @@ main (int argc, char **argv)
 	comment_arg = (char *) malloc((size_t) MAX_COM_LENGTH);
 	if (comment_arg == NULL)
 	  ERREXIT("Insufficient memory");
-	strcpy(comment_arg, argv[argn]+1);
+	/* Use bounded copy to prevent overflow */
+	strncpy(comment_arg, argv[argn] + 1, MAX_COM_LENGTH - 1);
+	comment_arg[MAX_COM_LENGTH - 1] = '\0';
 	for (;;) {
 	  comment_length = (unsigned int) strlen(comment_arg);
 	  if (comment_length > 0 && comment_arg[comment_length-1] == '"') {
@@ -462,8 +464,9 @@ main (int argc, char **argv)
 	  }
 	  if (++argn >= argc)
 	    ERREXIT("Missing ending quote mark");
-	  strcat(comment_arg, " ");
-	  strcat(comment_arg, argv[argn]);
+	  /* Bounded concatenation */
+	  strncat(comment_arg, " ", MAX_COM_LENGTH - strlen(comment_arg) - 1);
+	  strncat(comment_arg, argv[argn], MAX_COM_LENGTH - strlen(comment_arg) - 1);
 	}
       }
       comment_length = (unsigned int) strlen(comment_arg);
