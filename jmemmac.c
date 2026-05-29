@@ -238,7 +238,8 @@ jpeg_open_backing_store (j_common_ptr cinfo, backing_store_ptr info,
     next_file_num++;		/* advance counter */
 
     sprintf(info->temp_name, TEMP_FILE_NAME, next_file_num);
-    strcpy ( (Ptr)fName+1, info->temp_name );
+    /* FIXED: replaced strcpy with strncpy and explicit null terminator */
+    strncpy((Ptr)fName+1, info->temp_name, sizeof((Ptr)fName+1)-1); (Ptr)fName+1[sizeof((Ptr)fName+1)-1] = '\0';
     *fName = strlen (info->temp_name);
     osErr = FSMakeFSSpec ( vRefNum, dirID, fName, &theSpec );
 

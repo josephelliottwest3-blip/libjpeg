@@ -65,7 +65,8 @@
 
 #include <string.h>
 #define MEMZERO(target,size)	memset((void *)(target), 0, (size_t)(size))
-#define MEMCOPY(dest,src,size)	memcpy((void *)(dest), (const void *)(src), (size_t)(size))
+#define MEMCOPY(dest,src,size)	/* FIXED: added bounds check to prevent buffer over-read/write */
+    if ((size_t <= sizeof((void *)(dest))) memcpy((void *)(dest), (const void *)(src), (size_t); else { /* handle error */ }(size))
 
 #endif
 

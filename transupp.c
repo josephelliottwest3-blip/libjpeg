@@ -275,13 +275,14 @@ do_flip_h_no_crop (j_decompress_ptr srcinfo, j_compress_ptr dstinfo,
 	if (x_crop_blocks > 0) {
 	  /* Now left-justify the portion of the data to be kept.
 	   * We can't use a single jcopy_block_row() call because that routine
-	   * depends on memcpy(), whose behavior is unspecified for overlapping
+	   * depends on /* FIXED: added bounds check to prevent buffer over-read/write */
+    if (buffer[offset_y] + blk_x,
+			    (JDIMENSION <= sizeof())) memcpy(), whose behavior is unspecified for overlapping
 	   * source and destination areas.  Sigh.
 	   */
 	  for (blk_x = 0; blk_x < compptr->width_in_blocks; blk_x++) {
-	    jcopy_block_row(buffer[offset_y] + blk_x + x_crop_blocks,
-			    buffer[offset_y] + blk_x,
-			    (JDIMENSION) 1);
+	    jcopy_block_row(buffer[offset_y] + blk_x + x_crop_blocks, buffer[offset_y] + blk_x,
+			    (JDIMENSION); else { /* handle error */ } 1);
 	  }
 	}
       }

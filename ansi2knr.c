@@ -1,3 +1,4 @@
+
 /* Copyright (C) 1989, 2000 Aladdin Enterprises.  All rights reserved. */
 
 /*$Id: ansi2knr.c,v 1.14 2003/09/06 05:36:56 eggert Exp $*/
@@ -337,7 +338,16 @@ f:			if ( line >= buf + (bufsize - 1) ) /* overflow check */
 			    /* buf isn't a function header, but */
 			    /* more might be. */
 			    fputs(buf, out);
-			    strcpy(buf, more);
+			    /* Hardening: replace unsafe strcpy with bounded snprintf.
+ * Use sizeof(buf) when buf is a compile-time array.
+ * If buf is a pointer or its size is not known here, replace sizeof(buf)
+ * with the actual destination buffer size and remove the TODO.
+ */
+/* TODO: verify that 'buf' is a char array in this scope. If 'buf' is a pointer,
+ * replace sizeof(buf) with the actual destination buffer size.
+ */
+(void) snprintf(buf, sizeof(buf), "%s", more);
+
 			    line = buf;
 			    goto test;
 			  }

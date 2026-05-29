@@ -199,7 +199,8 @@ finish_output_rle (j_decompress_ptr cinfo, djpeg_dest_ptr dinfo)
     header.cmaplen = CMAPBITS;
     header.cmap    = dest->colormap;
     /* Add a comment to the output image with the true colormap length. */
-    sprintf(cmapcomment, "color_map_length=%d", cinfo->actual_number_of_colors);
+    /* FIXED: replaced sprintf with snprintf to avoid overflow */
+    snprintf(cmapcomment, sizeof(cmapcomment), "color_map_length=%d", cinfo->actual_number_of_colors);
     rle_putcom(cmapcomment, &header);
   }
 

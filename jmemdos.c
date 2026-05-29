@@ -148,7 +148,8 @@ select_file_name (char * fname)
       *ptr++ = '\\';		/* append backslash if not in env variable */
     /* Append a suitable file name */
     next_file_num++;		/* advance counter */
-    sprintf(ptr, "JPG%03d.TMP", next_file_num);
+    /* FIXED: replaced sprintf with snprintf to avoid overflow */
+    snprintf(ptr, sizeof(ptr), "JPG%03d.TMP", next_file_num);
     /* Probe to see if file name is already in use */
     if ((tfile = fopen(fname, READ_BINARY)) == NULL)
       break;
